@@ -95,6 +95,26 @@ export function visibleObserver(
     return elementVisibleObserver;
 }
 
+export function propertyChangeObserver(
+    target: HTMLElement,
+    callback: (mutations: MutationRecord[]) => void,
+): MutationObserver {
+    const observer = new MutationObserver(mutations => {
+        try {
+            callback(mutations);
+        } catch (error) {
+            console.error('Error in mutation observer callback:', error);
+        }
+    });
+
+    observer.observe(target, {
+        attributes: true, // Observe attribute changes
+        subtree: false, // Do not observe descendant nodes
+    });
+
+    return observer;
+}
+
 export function addedObserver(selector: string, callback: (elements: HTMLElement[]) => void): MutationObserver {
     const existingElements = document.querySelectorAll(selector);
     if (existingElements.length > 0) {
